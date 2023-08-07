@@ -1,11 +1,11 @@
 import { getCookie, removeCookie, setCookie } from 'typescript-cookie'
 import jwt_decode from 'jwt-decode'
-import type {JwtPayload} from 'jwt-decode'
+import type { JwtPayload } from 'jwt-decode'
 
 export function useToken() {
 
   const saveToken = (token: string) => {
-    setCookie('token', token, {expires: 365, path: '/'})
+    setCookie('token', token, { expires: 365, path: '/' })
   }
 
   const getToken = () => {
@@ -20,12 +20,12 @@ export function useToken() {
   const isValidToken = () => {
     console.log('isValidToken')
     const token = getToken()
-    if(!token){
+    if (!token) {
       return false
     }
 
     const decodeToken = jwt_decode<JwtPayload>(token)
-    if(decodeToken && decodeToken?.exp){
+    if (decodeToken && decodeToken?.exp) {
       const tokenDate = new Date(0)
       tokenDate.setUTCSeconds(decodeToken.exp)
       const today = new Date()
