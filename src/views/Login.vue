@@ -11,7 +11,7 @@
 
               <v-text-field density="compact" placeholder="Email address" prepend-inner-icon="mdi-email-outline"
                 variant="outlined" v-model="loginForm.email" :error-messages="errors.email?.[0]" color="primary"
-                name="email" />
+                name="email" type="email"/>
 
               <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mt-2">
                 Password

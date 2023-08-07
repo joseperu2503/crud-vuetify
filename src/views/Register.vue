@@ -19,7 +19,7 @@
               <div class="text-subtitle-1 text-medium-emphasis">Email</div>
               <v-text-field density="compact" placeholder="Email address" prepend-inner-icon="mdi-email-outline"
                 variant="outlined" v-model="registerForm.email" :error-messages="errors.email?.[0]" color="primary"
-                name="email" />
+                name="email" type="email" />
 
               <div class="text-subtitle-1 text-medium-emphasis">Password</div>
               <v-text-field :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
