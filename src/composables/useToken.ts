@@ -18,7 +18,6 @@ export function useToken() {
   }
 
   const isValidToken = () => {
-    console.log('isValidToken')
     const token = getToken()
     if (!token) {
       return false
