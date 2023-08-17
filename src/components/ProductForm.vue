@@ -10,6 +10,9 @@
             class="mt-4" color="primary" />
           <v-text-field label="Stock*" type="number" v-model="form.stock" :error-messages="errors.stock?.[0]" class="mt-4"
             color="primary" />
+          <v-file-input accept="image/png, image/jpeg" prepend-icon="mdi-camera" label="Image" v-model="image"
+            :error-messages="errors.image?.[0]" />
+          <v-img v-if="form.image" :src="form.image"></v-img>
         </v-form>
       </v-card-text>
       <v-card-actions>
@@ -28,30 +31,35 @@
 import { ref, computed, watch } from 'vue';
 import { http } from '@/http/http.service'
 import { ProductForm, ProductError } from '@/interfaces/product.interface'
+import { useUploadImage } from '@/composables/useUploadImage';
 
 const props = defineProps(['showModal', 'productId']);
 const emit = defineEmits(['update:showModal', 'reloadData']);
 const title = computed(() => {
-  return props.productId ? 'EditProduct' : 'NewProduct'
+  return props.productId ? 'Edit Product' : 'New Product'
 })
 const form = ref<ProductForm>({
   name: '',
   price: null,
-  stock: null
+  stock: null,
+  image: null
 })
 const errors = ref<ProductError>({});
 const submitMethod = ref('')
 const urlMethod = ref('')
 const loading = ref(false)
 const submitLoading = ref(false)
+const image = ref<File[]>([])
 
 const initForm = () => {
   form.value = {
     name: '',
     price: null,
-    stock: null
+    stock: null,
+    image: null
   }
   errors.value = {}
+  image.value = []
 }
 
 const openModal = () => {
@@ -66,6 +74,20 @@ const closeModal = () => {
 watch(() => props.showModal, (showModal) => {
   if (showModal) {
     openModal()
+  }
+})
+
+const { uploadImage } = useUploadImage()
+
+watch(image, async (value) => {
+  console.log(value[0])
+  if (value[0]) {
+    loading.value = true
+    let response = await uploadImage(value[0])
+    form.value.image = response.full_url_image
+    loading.value = false
+  } else {
+    form.value.image = null
   }
 })
 
