@@ -4,12 +4,12 @@
     <v-card :title="title" :loading="loading">
       <v-card-text>
         <v-form @keydown.enter="submit" class="mt-6">
-          <v-text-field label="Description*" v-model="form.description" :error-messages="errors.description?.[0]"
-            class="mt-4" color="primary"/>
+          <v-text-field label="Name*" v-model="form.name" :error-messages="errors.name?.[0]" class="mt-4"
+            color="primary" />
           <v-text-field label="Price*" type="number" v-model="form.price" :error-messages="errors.price?.[0]" prefix="$"
-            class="mt-4" color="primary"/>
-          <v-text-field label="Stock*" type="number" v-model="form.stock" :error-messages="errors.stock?.[0]"
-            class="mt-4" color="primary"/>
+            class="mt-4" color="primary" />
+          <v-text-field label="Stock*" type="number" v-model="form.stock" :error-messages="errors.stock?.[0]" class="mt-4"
+            color="primary" />
         </v-form>
       </v-card-text>
       <v-card-actions>
@@ -27,19 +27,19 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
 import { http } from '@/http/http.service'
-import { ArticleForm, ArticleError } from '@/interfaces/article.interface'
+import { ProductForm, ProductError } from '@/interfaces/product.interface'
 
-const props = defineProps(['showModal', 'articleId']);
+const props = defineProps(['showModal', 'productId']);
 const emit = defineEmits(['update:showModal', 'reloadData']);
 const title = computed(() => {
-  return props.articleId ? 'Edit Article' : 'New Article'
+  return props.productId ? 'EditProduct' : 'NewProduct'
 })
-const form = ref<ArticleForm>({
-  description: '',
+const form = ref<ProductForm>({
+  name: '',
   price: null,
   stock: null
 })
-const errors = ref<ArticleError>({});
+const errors = ref<ProductError>({});
 const submitMethod = ref('')
 const urlMethod = ref('')
 const loading = ref(false)
@@ -47,7 +47,7 @@ const submitLoading = ref(false)
 
 const initForm = () => {
   form.value = {
-    description: '',
+    name: '',
     price: null,
     stock: null
   }
@@ -56,7 +56,7 @@ const initForm = () => {
 
 const openModal = () => {
   initForm()
-  loadArticle()
+  loadProduct()
 }
 
 const closeModal = () => {
@@ -69,19 +69,19 @@ watch(() => props.showModal, (showModal) => {
   }
 })
 
-const loadArticle = () => {
+const loadProduct = () => {
   loading.value = true
-  if (props.articleId) {
+  if (props.productId) {
     submitMethod.value = 'put'
-    urlMethod.value = `/articles/${props.articleId}`
-    http.get(`/articles/${props.articleId}`)
+    urlMethod.value = `/products/${props.productId}`
+    http.get(`/products/${props.productId}`)
       .then(response => {
         form.value = response.data
         loading.value = false
       })
   } else {
     submitMethod.value = 'post'
-    urlMethod.value = `/articles`
+    urlMethod.value = `/products`
     loading.value = false
   }
 }
