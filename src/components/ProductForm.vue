@@ -80,7 +80,6 @@ watch(() => props.showModal, (showModal) => {
 const { uploadImage } = useUploadImage()
 
 watch(image, async (value) => {
-  console.log(value[0])
   if (value[0]) {
     loading.value = true
     let response = await uploadImage(value[0])
