@@ -82,8 +82,12 @@ const { uploadImage } = useUploadImage()
 watch(image, async (value) => {
   if (value[0]) {
     loading.value = true
-    let response = await uploadImage(value[0])
-    form.value.image = response.full_url_image
+    try {
+      let response = await uploadImage(value[0])
+      form.value.image = response.full_url_image
+    } catch (error) {
+      form.value.image = null
+    }
     loading.value = false
   } else {
     form.value.image = null
