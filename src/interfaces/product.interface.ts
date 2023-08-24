@@ -8,7 +8,7 @@ export interface Product {
   updated_at: string;
 }
 
-export interface ProductError {
+export interface ProductErrors {
   name?: string[];
   price?: string[];
   stock?: string[];

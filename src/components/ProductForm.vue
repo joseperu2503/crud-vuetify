@@ -29,8 +29,8 @@
 </template>
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue';
-import { http } from '@/http/http.service'
-import { ProductForm, ProductError } from '@/interfaces/product.interface'
+import { appApi } from '@/api/appApi'
+import { ProductForm, ProductErrors } from '@/interfaces/product.interface'
 import { useUploadImage } from '@/composables/useUploadImage';
 
 const props = defineProps(['showModal', 'productId']);
@@ -44,7 +44,7 @@ const form = ref<ProductForm>({
   stock: null,
   image: null
 })
-const errors = ref<ProductError>({});
+const errors = ref<ProductErrors>({});
 const submitMethod = ref('')
 const urlMethod = ref('')
 const loading = ref(false)
@@ -99,7 +99,7 @@ const loadProduct = () => {
   if (props.productId) {
     submitMethod.value = 'put'
     urlMethod.value = `/products/${props.productId}`
-    http.get(`/products/${props.productId}`)
+    appApi.get(`/products/${props.productId}`)
       .then(response => {
         form.value = response.data
         loading.value = false
@@ -113,7 +113,7 @@ const loadProduct = () => {
 
 const submit = () => {
   submitLoading.value = true
-  http({
+  appApi({
     method: submitMethod.value,
     url: urlMethod.value,
     data: form.value

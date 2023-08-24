@@ -3,11 +3,11 @@ import { useToken } from '@/composables/useToken'
 import { useRouter } from 'vue-router';
 
 export function useLogout() {
-  const tokenService = useToken()
+  const { removeToken } = useToken()
   const router = useRouter();
 
   const logout = () => {
-    tokenService.removeToken()
+    removeToken()
     router.push('login')
   }
 

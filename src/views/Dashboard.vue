@@ -79,7 +79,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { http } from '@/http/http.service'
+import { appApi } from '@/api/appApi'
 import ProductForm from '@/components/ProductForm.vue'
 import { useLogout } from '@/composables/useLogout'
 import { Product } from '@/interfaces/product.interface'
@@ -101,7 +101,7 @@ const newProduct = () => {
 const getProducts = async () => {
   loading.value = true
   try {
-    let response = await http.get("/products")
+    let response = await appApi.get("/products")
     products.value = response.data
   } catch (error) {
     console.log(error)
@@ -115,7 +115,7 @@ const editProduct = (id: number) => {
 }
 
 const deleteProduct = (id: number) => {
-  http.delete(`/products/${id}`)
+  appApi.delete(`/products/${id}`)
     .then(response => {
       getProducts()
     })

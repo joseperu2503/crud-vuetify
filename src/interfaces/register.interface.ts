@@ -5,9 +5,17 @@ export interface RegisterForm {
   password_confirmation: string;
 }
 
-export interface RegisterError {
+export interface RegisterErrors {
   name?: string[];
   email?: string[];
   password?: string[];
   password_confirmation?: string[];
 }
+
+export const initRegisterForm: RegisterForm = {
+  name: '',
+  email: '',
+  password: '',
+  password_confirmation: ''
+}
+

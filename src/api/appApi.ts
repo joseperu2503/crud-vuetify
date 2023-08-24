@@ -3,7 +3,7 @@ import { useToken } from "@/composables/useToken";
 
 const apiUrl = process.env.VUE_APP_API_URL
 
-const http = axios.create({
+const appApi = axios.create({
   baseURL: apiUrl,
   headers: {
     'Content-type': 'application/json',
@@ -12,10 +12,10 @@ const http = axios.create({
 
 const { getToken } = useToken()
 
-http.interceptors.request.use((request) => {
+appApi.interceptors.request.use((request) => {
   request.headers['Authorization'] = `Bearer ${getToken()}`
   return request;
 });
 
-export { http };
+export { appApi };
 

@@ -1,35 +1,33 @@
 
-import { http } from '@/http/http.service'
+import { appApi } from '@/api/appApi'
 import { useToken } from '@/composables/useToken'
 import { useRouter } from 'vue-router';
 import { ref } from "vue";
-import { LoginError, LoginForm } from '@/interfaces/login.interface';
+import { LoginErrors, LoginForm } from '@/interfaces/login.interface';
+import { initRegisterForm } from '@/interfaces/register.interface';
 
 export function useLogin() {
-  const tokenService = useToken()
+  const { saveToken } = useToken()
   const router = useRouter();
 
-  const errors = ref<LoginError>({});
+  const loginErrors = ref<LoginErrors>({});
 
   const loading = ref(false);
   const showPassword = ref(false);
 
-  const loginForm = ref<LoginForm>({
-    email: "",
-    password: "",
-  });
+  const loginForm = ref<LoginForm>({ ...initRegisterForm });
 
   const remember = ref(true);
 
   const login = async () => {
     loading.value = true
     try {
-      let response = await http.post("/login", loginForm.value)
-      tokenService.saveToken(response.data.access_token)
+      let response = await appApi.post("/login", loginForm.value)
+      saveToken(response.data.access_token)
       router.push({ name: "dashboard" });
     } catch (error: any) {
-      if (error.response.status === 422) {
-        errors.value = error.response.data.errors;
+      if (error.response?.status === 422) {
+        loginErrors.value = error.response.data.errors;
       }
     }
     loading.value = false
@@ -37,7 +35,7 @@ export function useLogin() {
 
   return {
     login,
-    errors,
+    loginErrors,
     loading,
     loginForm,
     remember,

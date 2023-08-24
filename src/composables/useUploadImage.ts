@@ -1,5 +1,5 @@
 
-import { imagesApi } from '@/http/imagesApi';
+import { imagesApi } from '@/api/imagesApi';
 import { ImageUploadResponse } from '@/interfaces/image.interface';
 
 export function useUploadImage() {

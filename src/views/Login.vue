@@ -10,7 +10,7 @@
               <div class="text-subtitle-1 text-medium-emphasis">Email</div>
 
               <v-text-field density="compact" placeholder="Email address" prepend-inner-icon="mdi-email-outline"
-                variant="outlined" v-model="loginForm.email" :error-messages="errors.email?.[0]" color="primary"
+                variant="outlined" v-model="loginForm.email" :error-messages="loginErrors.email?.[0]" color="primary"
                 name="email" type="email"/>
 
               <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mt-2">
@@ -23,7 +23,7 @@
               <v-text-field :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                 :type="showPassword ? 'text' : 'password'" density="compact" placeholder="Enter your password"
                 prepend-inner-icon="mdi-lock-outline" variant="outlined" @click:append-inner="showPassword = !showPassword"
-                v-model="loginForm.password" :error-messages="errors.password?.[0]" color="primary" />
+                v-model="loginForm.password" :error-messages="loginErrors.password?.[0]" color="primary" />
 
             </v-form>
 
@@ -54,6 +54,6 @@
 <script setup lang="ts">
 import { useLogin } from '@/composables/useLogin'
 
-const { login, loginForm, errors, loading, remember, showPassword } = useLogin()
+const { login, loginForm, loginErrors, loading, remember, showPassword } = useLogin()
 
 </script>
