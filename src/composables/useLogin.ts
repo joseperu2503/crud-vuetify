@@ -5,9 +5,12 @@ import { useRouter } from 'vue-router';
 import { ref } from "vue";
 import { LoginErrors, LoginForm } from '@/interfaces/login.interface';
 import { initRegisterForm } from '@/interfaces/register.interface';
+import { useSnackbar } from './useSnackbar';
 
 export function useLogin() {
   const { saveToken } = useToken()
+  const { openSnackbar } = useSnackbar()
+
   const router = useRouter();
 
   const loginErrors = ref<LoginErrors>({});
@@ -28,6 +31,9 @@ export function useLogin() {
     } catch (error: any) {
       if (error.response?.status === 422) {
         loginErrors.value = error.response.data.errors;
+      }
+      if (error.response?.status === 401) {
+        openSnackbar('Invalid credentials. Please check your username and password.', 'danger')
       }
     }
     loading.value = false
