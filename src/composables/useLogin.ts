@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router';
 import { ref } from "vue";
 import { LoginErrors, LoginForm } from '@/interfaces/login.interface';
 import { initRegisterForm } from '@/interfaces/register.interface';
-import { useSnackbar } from './useSnackbar';
+import { useSnackbar } from '@/composables/useSnackbar';
 
 export function useLogin() {
   const { saveToken } = useToken()

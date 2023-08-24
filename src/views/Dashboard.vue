@@ -27,24 +27,12 @@
             <v-table class="mt-10">
               <thead>
                 <tr>
-                  <th class="text-left">
-                    ID
-                  </th>
-                  <th class="text-left">
-                    Name
-                  </th>
-                  <th class="text-left">
-                    Price
-                  </th>
-                  <th class="text-left">
-                    Stock
-                  </th>
-                  <th class="text-left">
-                    Date
-                  </th>
-                  <th class="text-left">
-                    Actions
-                  </th>
+                  <th class="text-left">ID</th>
+                  <th class="text-left">Name</th>
+                  <th class="text-left">Price</th>
+                  <th class="text-left">Stock</th>
+                  <th class="text-left">Date</th>
+                  <th class="text-left">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -84,6 +72,7 @@ import ProductForm from '@/components/ProductForm.vue'
 import { useLogout } from '@/composables/useLogout'
 import { Product } from '@/interfaces/product.interface'
 import ToogleTheme from '@/components/ToogleTheme.vue';
+import { useSnackbar } from '@/composables/useSnackbar';
 
 const { logout } = useLogout()
 
@@ -104,7 +93,7 @@ const getProducts = async () => {
     let response = await appApi.get("/products")
     products.value = response.data
   } catch (error) {
-    console.log(error)
+    openSnackbar('An error occurred while loading the products.', 'error')
   }
   loading.value = false
 }
@@ -114,14 +103,12 @@ const editProduct = (id: number) => {
   showModal.value = true
 }
 
-const deleteProduct = (id: number) => {
-  appApi.delete(`/products/${id}`)
-    .then(response => {
-      getProducts()
-    })
-    .catch((error) => {
-      console.log(error)
-    });
+const { openSnackbar } = useSnackbar()
+
+const deleteProduct = async (id: number) => {
+  let response = await appApi.delete(`/products/${id}`)
+  openSnackbar(response.data.message, 'success')
+  getProducts()
 }
 
 getProducts()

@@ -32,6 +32,7 @@ import { ref, computed, watch } from 'vue';
 import { appApi } from '@/api/appApi'
 import { ProductForm, ProductErrors } from '@/interfaces/product.interface'
 import { useUploadImage } from '@/composables/useUploadImage';
+import { useSnackbar } from '@/composables/useSnackbar';
 
 const props = defineProps(['showModal', 'productId']);
 const emit = defineEmits(['update:showModal', 'reloadData']);
@@ -94,16 +95,14 @@ watch(image, async (value) => {
   }
 })
 
-const loadProduct = () => {
+const loadProduct = async () => {
   loading.value = true
   if (props.productId) {
     submitMethod.value = 'put'
     urlMethod.value = `/products/${props.productId}`
-    appApi.get(`/products/${props.productId}`)
-      .then(response => {
-        form.value = response.data
-        loading.value = false
-      })
+    let response = await appApi.get(`/products/${props.productId}`)
+    form.value = response.data
+    loading.value = false
   } else {
     submitMethod.value = 'post'
     urlMethod.value = `/products`
@@ -111,25 +110,25 @@ const loadProduct = () => {
   }
 }
 
-const submit = () => {
+const { openSnackbar } = useSnackbar()
+
+const submit = async () => {
   submitLoading.value = true
-  appApi({
-    method: submitMethod.value,
-    url: urlMethod.value,
-    data: form.value
-  })
-    .then(response => {
-      submitLoading.value = false
-      emit('reloadData')
-      closeModal()
+  try {
+    let response = await appApi({
+      method: submitMethod.value,
+      url: urlMethod.value,
+      data: form.value
     })
-    .catch((error) => {
-      submitLoading.value = false
-      console.log(error)
-      if (error.response.status === 422) {
-        errors.value = error.response.data.errors;
-      }
-    });
+    emit('reloadData')
+    openSnackbar(response.data.message, 'success')
+    closeModal()
+  } catch (error: any) {
+    if (error.response?.status === 422) {
+      errors.value = error.response.data.errors;
+    }
+  }
+  submitLoading.value = false
 }
 
 </script>
