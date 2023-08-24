@@ -33,7 +33,7 @@ export function useLogin() {
         loginErrors.value = error.response.data.errors;
       }
       if (error.response?.status === 401) {
-        openSnackbar('Invalid credentials. Please check your username and password.', 'danger')
+        openSnackbar('Invalid credentials. Please check your username and password.', 'error')
       }
     }
     loading.value = false

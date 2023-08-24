@@ -1,7 +1,7 @@
 import { ref } from "vue";
 import { defineStore } from "pinia";
 
-export type SnackbarType = 'info' | 'success' | 'danger'
+export type SnackbarType = 'info' | 'success' | 'error'
 export const useSnackbarStore = defineStore("appbar", () => {
 
   const showSnackbar = ref<boolean>(false);
