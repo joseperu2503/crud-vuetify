@@ -10,10 +10,12 @@
             class="mt-4" color="primary" />
           <v-text-field label="Stock*" type="number" v-model="form.stock" :error-messages="errors.stock?.[0]" class="mt-4"
             color="primary" />
-          <v-file-input accept="image/png, image/jpeg" prepend-icon="mdi-camera" label="Image" v-model="image"
-            :error-messages="errors.image?.[0]" />
-          <v-img v-if="form.image" :src="form.image"></v-img>
+          <v-file-input accept="image/png, image/jpeg" prepend-icon="mdi-camera" label="Images" v-model="images"
+            :error-messages="errors.images?.[0]" multiple class="mt-4" />
         </v-form>
+        <v-carousel hide-delimiters v-if="form.images.length > 0" height="300">
+          <v-carousel-item v-for="(image, index) in form.images" :key="index" :src="image" contain></v-carousel-item>
+        </v-carousel>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -43,24 +45,24 @@ const form = ref<ProductForm>({
   name: '',
   price: null,
   stock: null,
-  image: null
+  images: []
 })
 const errors = ref<ProductErrors>({});
 const submitMethod = ref('')
 const urlMethod = ref('')
 const loading = ref(false)
 const submitLoading = ref(false)
-const image = ref<File[]>([])
+const images = ref<File[]>([])
 
 const initForm = () => {
   form.value = {
     name: '',
     price: null,
     stock: null,
-    image: null
+    images: []
   }
   errors.value = {}
-  image.value = []
+  images.value = []
 }
 
 const openModal = () => {
@@ -78,20 +80,22 @@ watch(() => props.showModal, (showModal) => {
   }
 })
 
-const { uploadImage } = useUploadImage()
+const { uploadImages } = useUploadImage()
 
-watch(image, async (value) => {
-  if (value[0]) {
+watch(images, async (newValue) => {
+  if (newValue.length != 0) {
     loading.value = true
     try {
-      let response = await uploadImage(value[0])
-      form.value.image = response.full_url_image
+      let response = await uploadImages(newValue)
+      response.images.map(image => {
+        form.value.images?.push(image.full_url_image)
+      })
+      images.value = []
+      openSnackbar(response.message, 'info')
     } catch (error) {
-      form.value.image = null
+      images.value = []
     }
     loading.value = false
-  } else {
-    form.value.image = null
   }
 })
 

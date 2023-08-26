@@ -1,7 +1,19 @@
-export interface ImageUploadResponse {
+export interface UploadImageResponse {
   success: boolean;
   message: string;
-  full_url_image: string;
-  partial_url_image: string;
-  image_name: string;
+  image: {
+    full_url_image: string;
+    partial_url_image: string;
+    image_name: string;
+  }
+}
+
+export interface UploadImagesResponse {
+  success: boolean;
+  message: string;
+  images: {
+    full_url_image: string;
+    partial_url_image: string;
+    image_name: string;
+  }[]
 }

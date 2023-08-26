@@ -4,7 +4,7 @@ export interface Product {
   id: number;
   price: number;
   stock: number;
-  image: string;
+  images: string[];
   updated_at: string;
 }
 
@@ -12,12 +12,12 @@ export interface ProductErrors {
   name?: string[];
   price?: string[];
   stock?: string[];
-  image?: string[];
+  images?: string[];
 }
 
 export interface ProductForm {
   name: string | null;
   price: number | null;
   stock: number | null;
-  image: string | null;
+  images: string[];
 }
