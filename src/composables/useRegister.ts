@@ -6,7 +6,7 @@ import { RegisterErrors, RegisterForm, initRegisterForm } from '@/interfaces/reg
 
 export function useRegister() {
 
-  const errors = ref<RegisterErrors>({});
+  const registerErrors = ref<RegisterErrors>({});
   const loading = ref(false);
   const showPassword = ref(false);
 
@@ -25,7 +25,7 @@ export function useRegister() {
       login()
     } catch (error: any) {
       if (error.response?.status === 422) {
-        errors.value = error.response.data.errors;
+        registerErrors.value = error.response.data.errors;
       }
     }
     loading.value = false
@@ -33,7 +33,7 @@ export function useRegister() {
 
   return {
     register,
-    errors,
+    registerErrors,
     loading,
     registerForm,
     showPassword

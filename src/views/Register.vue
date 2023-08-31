@@ -13,27 +13,27 @@
             <v-form @keydown.enter="register" class="mt-4">
               <div class="text-subtitle-1 text-medium-emphasis">Name</div>
               <v-text-field density="compact" placeholder="Enter your name" prepend-inner-icon="mdi-email-outline"
-                variant="outlined" v-model="registerForm.name" :error-messages="errors.name?.[0]" color="primary"
+                variant="outlined" v-model="registerForm.name" :error-messages="registerErrors.name?.[0]" color="primary"
                 name="name" />
 
               <div class="text-subtitle-1 text-medium-emphasis">Email</div>
               <v-text-field density="compact" placeholder="Email address" prepend-inner-icon="mdi-email-outline"
-                variant="outlined" v-model="registerForm.email" :error-messages="errors.email?.[0]" color="primary"
-                name="email" type="email" />
+                variant="outlined" v-model="registerForm.email" :error-messages="registerErrors.email?.[0]"
+                color="primary" name="email" type="email" />
 
               <div class="text-subtitle-1 text-medium-emphasis">Password</div>
               <v-text-field :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                 :type="showPassword ? 'text' : 'password'" density="compact" placeholder="Enter your password"
                 prepend-inner-icon="mdi-lock-outline" variant="outlined"
                 @click:append-inner="showPassword = !showPassword" v-model="registerForm.password"
-                :error-messages="errors.password?.[0]" color="primary" />
+                :error-messages="registerErrors.password?.[0]" color="primary" />
 
               <div class="text-subtitle-1 text-medium-emphasis">Confirm Password</div>
               <v-text-field :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                 :type="showPassword ? 'text' : 'password'" density="compact" placeholder="Confirm your password"
                 prepend-inner-icon="mdi-lock-outline" variant="outlined"
                 @click:append-inner="showPassword = !showPassword" v-model="registerForm.password_confirmation"
-                :error-messages="errors.password_confirmation?.[0]" color="primary" />
+                :error-messages="registerErrors.password_confirmation?.[0]" color="primary" />
             </v-form>
 
             <v-btn block class="mb-4 mt-4" color="blue" size="large" variant="tonal" @click="register" :loading="loading">
@@ -56,6 +56,6 @@
 <script setup lang="ts">
 import { useRegister } from '@/composables/useRegister'
 
-const { register, registerForm, errors, loading, showPassword } = useRegister()
+const { register, registerForm, registerErrors, loading, showPassword } = useRegister()
 
 </script>
