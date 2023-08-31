@@ -1,6 +1,6 @@
 
 import { appApi } from '@/api/appApi'
-import { ref } from "vue";
+import { ref } from 'vue';
 import { useLogin } from '@/composables/useLogin';
 import { RegisterErrors, RegisterForm, initRegisterForm } from '@/interfaces/register.interface';
 
