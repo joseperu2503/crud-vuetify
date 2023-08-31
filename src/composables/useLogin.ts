@@ -2,7 +2,7 @@
 import { appApi } from '@/api/appApi'
 import { useToken } from '@/composables/useToken'
 import { useRouter } from 'vue-router';
-import { ref } from "vue";
+import { ref } from 'vue';
 import { LoginErrors, LoginForm } from '@/interfaces/login.interface';
 import { initRegisterForm } from '@/interfaces/register.interface';
 import { useSnackbar } from '@/composables/useSnackbar';
@@ -25,7 +25,7 @@ export function useLogin() {
   const login = async () => {
     loading.value = true
     try {
-      let response = await appApi.post("/login", loginForm.value)
+      const response = await appApi.post("/login", loginForm.value)
       saveToken(response.data.access_token)
       router.push({ name: "dashboard" });
     } catch (error: any) {
