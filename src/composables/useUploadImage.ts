@@ -3,7 +3,7 @@ import { imagesApi } from '@/api/imagesApi';
 import { UploadImageResponse, UploadImagesResponse } from '@/interfaces/image.interface';
 
 export function useUploadImage() {
-  let folderName = process.env.VUE_IMAGES_FOLDER_NAME ?? 'crud_vuetify'
+  let folderName = process.env.IMAGES_FOLDER_NAME ?? 'crud_vuetify'
 
   const uploadImage = async (image: File): Promise<UploadImageResponse> => {
     try {
