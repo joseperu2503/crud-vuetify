@@ -30,7 +30,7 @@
   </v-dialog>
 </template>
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { appApi } from '@/api/appApi'
 import { ProductForm, ProductErrors } from '@/interfaces/product.interface'
 import { useUploadImage } from '@/composables/useUploadImage';
@@ -38,9 +38,6 @@ import { useSnackbar } from '@/composables/useSnackbar';
 
 const props = defineProps(['showModal', 'productId']);
 const emit = defineEmits(['update:showModal', 'reloadData']);
-const title = computed(() => {
-  return props.productId ? 'Edit Product' : 'New Product'
-})
 const form = ref<ProductForm>({
   name: '',
   price: null,
@@ -53,6 +50,7 @@ const urlMethod = ref('')
 const loading = ref(false)
 const submitLoading = ref(false)
 const images = ref<File[]>([])
+const title = ref('')
 
 const initForm = () => {
   form.value = {
@@ -94,6 +92,7 @@ watch(images, async (newValue) => {
       openSnackbar(response.message, 'info')
     } catch (error) {
       images.value = []
+      openSnackbar('An error occurred. Please try again.', 'error')
     }
     loading.value = false
   }
@@ -102,16 +101,17 @@ watch(images, async (newValue) => {
 const loadProduct = async () => {
   loading.value = true
   if (props.productId) {
+    title.value = 'Edit Product'
     submitMethod.value = 'put'
     urlMethod.value = `/products/${props.productId}`
     let response = await appApi.get(`/products/${props.productId}`)
     form.value = response.data
-    loading.value = false
   } else {
+    title.value = 'New Product'
     submitMethod.value = 'post'
     urlMethod.value = `/products`
-    loading.value = false
   }
+  loading.value = false
 }
 
 const { openSnackbar } = useSnackbar()
@@ -130,6 +130,8 @@ const submit = async () => {
   } catch (error: any) {
     if (error.response?.status === 422) {
       errors.value = error.response.data.errors;
+    } else {
+      openSnackbar('An error occurred. Please try again.', 'error')
     }
   }
   submitLoading.value = false

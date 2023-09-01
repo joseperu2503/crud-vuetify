@@ -106,9 +106,13 @@ const editProduct = (id: number) => {
 const { openSnackbar } = useSnackbar()
 
 const deleteProduct = async (id: number) => {
-  let response = await appApi.delete(`/products/${id}`)
-  openSnackbar(response.data.message, 'success')
-  getProducts()
+  try {
+    let response = await appApi.delete(`/products/${id}`)
+    openSnackbar(response.data.message, 'success')
+    getProducts()
+  } catch (error: any) {
+    openSnackbar('An error occurred. Please try again.', 'error')
+  }
 }
 
 getProducts()
