@@ -28,10 +28,10 @@
               <thead>
                 <tr>
                   <th class="text-left">ID</th>
-                  <th class="text-left">Name</th>
+                  <th class="text-left" style="min-width: 200px">Name</th>
                   <th class="text-left">Price</th>
                   <th class="text-left">Stock</th>
-                  <th class="text-left">Date</th>
+                  <th class="text-left" style="min-width: 110px">Date</th>
                   <th class="text-left">Actions</th>
                 </tr>
               </thead>
