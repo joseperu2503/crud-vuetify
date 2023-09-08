@@ -4,45 +4,46 @@
       <v-form @keydown.enter="submit" class="mt-6">
         <v-row>
           <v-col cols="12" md="7">
-            <v-text-field label="Name*" v-model="form.name" :error-messages="errors.name?.[0]" class="mt-4"
-              color="primary" />
-            <v-textarea variant="filled" label="Description" auto-grow
-              model-value="The Woodman set to work at once, and so sharp was his axe that the tree was soon chopped nearly through."></v-textarea>
-            <v-autocomplete label="Brand"
-              :items="['Nike', 'Adidas', 'Puma', 'Xiaomi', 'Apple', 'Samsung']"></v-autocomplete>
+            <v-text-field label="Name*" v-model="form.name" :error-messages="errors.name?.[0]" color="primary" />
+            <v-textarea variant="filled" label="Description*" auto-grow v-model="form.description"
+              :error-messages="errors.description?.[0]" class="mt-4"></v-textarea>
+            <v-select :items="brands" v-model="form.brand_id" label="Brand" item-title="name" item-value="id"
+              class="mt-4"></v-select>
             <v-text-field label="Price*" type="number" v-model="form.price" :error-messages="errors.price?.[0]" prefix="$"
               class="mt-4" color="primary" />
             <v-text-field label="Stock*" type="number" v-model="form.stock" :error-messages="errors.stock?.[0]"
               class="mt-4" color="primary" />
-            <v-autocomplete label="Category"
-              :items="['Electronics', 'Clothing and Fashion', 'Home and Garden', 'Health and Beauty', 'Toys and Entertainment', 'Pets', 'Jewelry and Watches']"></v-autocomplete>
-            <v-btn-toggle multiple divided variant="outlined" color="primary">
-              <v-btn value="s">Hombre</v-btn>
-              <v-btn value="m">Mujer</v-btn>
-              <v-btn value="l">Niño</v-btn>
-              <v-btn value="xl">Niña</v-btn>
+            <v-select :items="categories" v-model="form.category_id" label="Category" item-title="name" item-value="id"
+              class="mt-4" />
+            <v-btn-toggle multiple divided variant="outlined" color="primary" v-model="form.genders">
+              <v-btn :value="gender.id" v-for="(gender, index) in genders" :key="index">{{ gender.name }}</v-btn>
             </v-btn-toggle>
-            <v-btn-toggle multiple divided variant="outlined" color="primary" class="mt-4">
-              <v-btn value="s">S</v-btn>
-              <v-btn value="m">M</v-btn>
-              <v-btn value="l">L</v-btn>
-              <v-btn value="xl">XL</v-btn>
+            <v-btn-toggle multiple divided variant="outlined" color="primary" class="mt-4" v-model="form.sizes">
+              <v-btn :value="size.id" v-for="(size, index) in sizes" :key="index">{{ size.name }}</v-btn>
             </v-btn-toggle>
           </v-col>
           <v-col cols="12" md="5">
-            <v-color-picker :modes="['hex']" width="100%"></v-color-picker>
-            <v-btn class="mt-4 w-100" prepend-icon="mdi-plus">
+            <v-color-picker :modes="['hex']" width="100%" v-model="colorPicker"></v-color-picker>
+            <v-btn class="mt-4 w-100" prepend-icon="mdi-plus" @click="addColor">
               Add color
             </v-btn>
+            <div class="colors mt-4 mb-4">
+              <div v-for="(color, index) in form.colors" :key="index" class="color-item" :style="{ 'background': color }">
+              </div>
+            </div>
+            <v-divider></v-divider>
+
             <v-file-input accept="image/png, image/jpeg" prepend-icon="mdi-camera" label="Images" v-model="images"
               :error-messages="errors.images?.[0]" multiple class="d-none" ref="imageInput" />
             <v-btn prepend-icon="mdi-camera" class="mt-4 w-100" @click="clickAddImage">
               Subir imagen
             </v-btn>
-            <v-carousel hide-delimiters v-if="form.images.length > 0" height="300" class="mt-4">
+            <v-carousel hide-delimiters v-if="form.images.length > 0" height="300" class="mt-4 mb-4">
               <v-carousel-item v-for="(image, index) in form.images" :key="index" :src="image" contain></v-carousel-item>
             </v-carousel>
-            <v-switch hide-details label="Publico" color="primary"></v-switch>
+            <v-divider></v-divider>
+
+            <v-switch hide-details label="Publico" color="primary" v-model="form.is_public"></v-switch>
           </v-col>
         </v-row>
       </v-form>
@@ -61,7 +62,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { appApi } from '@/api/appApi'
-import { ProductForm, ProductErrors } from '@/interfaces/product.interface'
+import { ProductForm, ProductErrors, Brand, Size, Gender, Category } from '@/interfaces/product.interface'
 import { useUploadImage } from '@/composables/useUploadImage';
 import { useSnackbar } from '@/composables/useSnackbar';
 import { useRoute, useRouter } from 'vue-router';
@@ -75,8 +76,21 @@ const form = ref<ProductForm>({
   name: '',
   price: null,
   stock: null,
-  images: []
+  images: [],
+  brand_id: null,
+  category_id: null,
+  colors: [],
+  description: '',
+  is_public: false,
+  genders: [],
+  sizes: []
 })
+
+const brands = ref<Brand[]>([])
+const categories = ref<Category[]>([])
+const sizes = ref<Size[]>([])
+const genders = ref<Gender[]>([])
+
 const errors = ref<ProductErrors>({});
 const submitMethod = ref('')
 const urlMethod = ref('')
@@ -84,16 +98,25 @@ const loading = ref(false)
 const submitLoading = ref(false)
 const images = ref<File[]>([])
 const title = ref('')
+const colorPicker = ref('#000000')
 
 const initForm = () => {
   form.value = {
     name: '',
     price: null,
     stock: null,
-    images: []
+    images: [],
+    brand_id: null,
+    category_id: null,
+    colors: [],
+    description: '',
+    is_public: false,
+    genders: [],
+    sizes: []
   }
   errors.value = {}
   images.value = []
+  colorPicker.value = '#000000'
 }
 
 //carga de imagenes
@@ -123,19 +146,33 @@ const loadProduct = async () => {
     title.value = 'Edit Product'
     submitMethod.value = 'put'
     urlMethod.value = `/products/${productId.value}`
-    let response = await appApi.get(`/products/${productId.value}`)
-    form.value = response.data
+    try {
+      let response = await appApi.get(`/products/${productId.value}`)
+      form.value = response.data
+    } catch (error) {
+      openSnackbar('An error occurred. Please try again.', 'error')
+    }
   } else {
     title.value = 'New Product'
     submitMethod.value = 'post'
     urlMethod.value = `/products`
   }
+  await loadFormData()
   loading.value = false
+}
+
+const loadFormData = async () => {
+  let response = await appApi.get(`/products/form-data`)
+  brands.value = response.data.brands
+  categories.value = response.data.brands
+  sizes.value = response.data.sizes
+  genders.value = response.data.genders
 }
 
 const { openSnackbar } = useSnackbar()
 
 const submit = async () => {
+  console.log(form.value)
   submitLoading.value = true
   try {
     let response = await appApi({
@@ -157,7 +194,6 @@ const submit = async () => {
 
 const imageInput = ref<any>(null)
 const clickAddImage = () => {
-  console.log('click')
   console.log(imageInput.value?.click())
 }
 
@@ -168,4 +204,21 @@ const closeForm = () => {
   router.push('/my-products')
 }
 
+const addColor = () => {
+  form.value.colors.push(colorPicker.value)
+}
+
 </script>
+<style>
+.colors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.color-item {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+}
+</style>

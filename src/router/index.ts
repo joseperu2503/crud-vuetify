@@ -3,7 +3,7 @@ import { useToken } from '@/composables/useToken'
 
 const routes = [
   {
-    path: '/',
+    path: '',
     redirect: '/login'
   },
   {
@@ -67,7 +67,7 @@ router.beforeEach(async (to, from) => {
 
   if (to.meta?.redirect) {
     if (validToken()) {
-      router.push('/dashboard');
+      router.push('/my-products');
     }
     return true;
   }
