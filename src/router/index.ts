@@ -31,11 +31,19 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+    component: () => import('@/layouts/AppLayout.vue'),
     children: [
       {
-        path: '/dashboard',
-        name: 'dashboard',
-        component: () => import('@/views/Dashboard.vue'),
+        path: '/my-products',
+        component: () => import('@/views/MyProducts.vue'),
+      },
+      {
+        path: '/create-product',
+        component: () => import('@/views/ProductForm.vue'),
+      },
+      {
+        path: '/product/:productId',
+        component: () => import('@/views/ProductForm.vue'),
       },
     ],
   },
