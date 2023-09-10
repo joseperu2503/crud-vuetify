@@ -4,7 +4,7 @@ import { useToken } from '@/composables/useToken'
 const routes = [
   {
     path: '',
-    redirect: '/login'
+    component: () => import('@/views/Home.vue'),
   },
   {
     path: '',

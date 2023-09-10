@@ -27,7 +27,7 @@ export function useLogin() {
     try {
       const response = await appApi.post("/login", loginForm.value)
       saveToken(response.data.access_token)
-      router.push('/my-products');
+      router.replace('/my-products');
     } catch (error: any) {
       if (error.response?.status === 422) {
         loginErrors.value = error.response.data.errors;

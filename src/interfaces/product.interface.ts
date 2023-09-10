@@ -1,6 +1,7 @@
 export interface Product {
   created_at: string;
   name: string;
+  description: string;
   id: number;
   price: number;
   stock: number;
