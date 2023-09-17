@@ -3,9 +3,8 @@
 </template>
 
 <script setup lang="ts">
-import { useTheme } from 'vuetify'
+import { useAppTheme } from '@/composables/useAppTheme'
 
-const theme = useTheme()
+const { toggleTheme, theme } = useAppTheme()
 
-const toggleTheme = () => theme.global.name.value = theme.global.current.value.dark ? 'light' : 'dark'
 </script>
