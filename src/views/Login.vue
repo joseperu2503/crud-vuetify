@@ -11,7 +11,7 @@
 
               <v-text-field density="compact" placeholder="Email address" prepend-inner-icon="mdi-email-outline"
                 variant="outlined" v-model="loginForm.email" :error-messages="loginErrors.email?.[0]" color="primary"
-                name="email" type="email"/>
+                name="email" type="email" />
 
               <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mt-2">
                 Password
@@ -22,14 +22,16 @@
 
               <v-text-field :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                 :type="showPassword ? 'text' : 'password'" density="compact" placeholder="Enter your password"
-                prepend-inner-icon="mdi-lock-outline" variant="outlined" @click:append-inner="showPassword = !showPassword"
-                v-model="loginForm.password" :error-messages="loginErrors.password?.[0]" color="primary" />
+                prepend-inner-icon="mdi-lock-outline" variant="outlined"
+                @click:append-inner="showPassword = !showPassword" v-model="loginForm.password"
+                :error-messages="loginErrors.password?.[0]" color="primary" />
 
             </v-form>
 
             <v-card class="mb-8" color="surface-variant mt-4" variant="tonal">
               <v-card-text class="text-medium-emphasis text-caption">
-                Warning: After 3 consecutive failed login attempts, you account will be temporarily locked for three hours.
+                Warning: After 3 consecutive failed login attempts, you account will be temporarily locked for three
+                hours.
                 If
                 you must login now, you can also click "Forgot login password?" below to reset the login password.
               </v-card-text>
