@@ -1,26 +1,31 @@
 <template>
   <v-card :title="title" :loading="loading">
     <v-card-text>
-      <v-form @keydown.enter="submit" class="mt-6">
+      <v-form @keydown.enter="submit" class="mt-6" validate-on="blur" ref="form">
         <v-row>
           <v-col cols="12" md="7">
-            <v-text-field label="Name*" v-model="form.name" :error-messages="errors.name?.[0]" color="primary" />
-            <v-textarea variant="filled" label="Description*" auto-grow v-model="form.description"
-              :error-messages="errors.description?.[0]" class="mt-4"></v-textarea>
-            <v-select :items="brands" v-model="form.brand_id" label="Brand" item-title="name" item-value="id"
+            <v-text-field label="Name*" v-model="productForm.name" :error-messages="errors.name?.[0]" color="primary"
+              :rules="nameRules" />
+            <v-textarea variant="filled" label="Description*" auto-grow v-model="productForm.description"
+              :error-messages="errors.description?.[0]" class="mt-4" :rules="descriptionRules"></v-textarea>
+            <v-select :items="brands" v-model="productForm.brand_id" label="Brand" item-title="name" item-value="id"
               class="mt-4"></v-select>
-            <v-text-field label="Price*" type="number" v-model="form.price" :error-messages="errors.price?.[0]" prefix="$"
-              class="mt-4" color="primary" />
-            <v-text-field label="Stock*" type="number" v-model="form.stock" :error-messages="errors.stock?.[0]"
-              class="mt-4" color="primary" />
-            <v-select :items="categories" v-model="form.category_id" label="Category" item-title="name" item-value="id"
-              class="mt-4" />
-            <v-btn-toggle multiple divided variant="outlined" color="primary" v-model="form.genders">
-              <v-btn :value="gender.id" v-for="(gender, index) in genders" :key="index">{{ gender.name }}</v-btn>
-            </v-btn-toggle>
-            <v-btn-toggle multiple divided variant="outlined" color="primary" class="mt-4" v-model="form.sizes">
-              <v-btn :value="size.id" v-for="(size, index) in sizes" :key="index">{{ size.name }}</v-btn>
-            </v-btn-toggle>
+            <v-text-field label="Price*" type="number" v-model="productForm.price" :error-messages="errors.price?.[0]"
+              prefix="$" class="mt-4" color="primary" :rules="priceRules" />
+            <v-text-field label="Stock*" type="number" v-model="productForm.stock" :error-messages="errors.stock?.[0]"
+              class="mt-4" color="primary" :rules="stockRules" />
+            <v-select :items="categories" v-model="productForm.category_id" label="Category" item-title="name"
+              item-value="id" class="mt-4" />
+            <div>
+              <v-btn-toggle multiple divided variant="outlined" color="primary" v-model="productForm.genders">
+                <v-btn :value="gender.id" v-for="(gender, index) in genders" :key="index">{{ gender.name }}</v-btn>
+              </v-btn-toggle>
+            </div>
+            <div>
+              <v-btn-toggle multiple divided variant="outlined" color="primary" class="mt-4" v-model="productForm.sizes">
+                <v-btn :value="size.id" v-for="(size, index) in sizes" :key="index">{{ size.name }}</v-btn>
+              </v-btn-toggle>
+            </div>
           </v-col>
           <v-col cols="12" md="5">
             <v-color-picker :modes="['hex']" width="100%" v-model="colorPicker"></v-color-picker>
@@ -28,7 +33,8 @@
               Add color
             </v-btn>
             <div class="colors mt-4 mb-4">
-              <div v-for="(color, index) in form.colors" :key="index" class="color-item" :style="{ 'background': color }">
+              <div v-for="(color, index) in productForm.colors" :key="index" class="color-item"
+                :style="{ 'background': color }">
               </div>
             </div>
             <v-divider></v-divider>
@@ -38,12 +44,13 @@
             <v-btn prepend-icon="mdi-camera" class="mt-4 w-100" @click="clickAddImage">
               Subir imagen
             </v-btn>
-            <v-carousel hide-delimiters v-if="form.images.length > 0" height="300" class="mt-4 mb-4">
-              <v-carousel-item v-for="(image, index) in form.images" :key="index" :src="image" contain></v-carousel-item>
+            <v-carousel hide-delimiters v-if="productForm.images.length > 0" height="300" class="mt-4 mb-4">
+              <v-carousel-item v-for="(image, index) in productForm.images" :key="index" :src="image"
+                contain></v-carousel-item>
             </v-carousel>
             <v-divider></v-divider>
 
-            <v-switch hide-details label="Free Shipping" color="primary" v-model="form.free_shipping"></v-switch>
+            <v-switch hide-details label="Free Shipping" color="primary" v-model="productForm.free_shipping"></v-switch>
           </v-col>
         </v-row>
       </v-form>
@@ -72,7 +79,7 @@ const route = useRoute()
 const router = useRouter()
 const productId = ref(route.params.productId)
 
-const form = ref<ProductForm>({
+const productForm = ref<ProductForm>({
   name: '',
   price: null,
   stock: null,
@@ -101,7 +108,7 @@ const title = ref('')
 const colorPicker = ref('#000000')
 
 const initForm = () => {
-  form.value = {
+  productForm.value = {
     name: '',
     price: null,
     stock: null,
@@ -127,7 +134,7 @@ watch(images, async (newValue) => {
     try {
       let response = await uploadImages(newValue)
       response.images.map(image => {
-        form.value.images?.push(image.full_url_image)
+        productForm.value.images?.push(image.full_url_image)
       })
       images.value = []
       openSnackbar(response.message, 'info')
@@ -148,7 +155,7 @@ const loadProduct = async () => {
     urlMethod.value = `/products/${productId.value}`
     try {
       let response = await appApi.get<Product>(`/products/${productId.value}`)
-      form.value = response.data
+      productForm.value = response.data
     } catch (error) {
       openSnackbar('An error occurred. Please try again.', 'error')
     }
@@ -173,13 +180,16 @@ const loadFormData = async () => {
 const { openSnackbar } = useSnackbar()
 
 const submit = async () => {
-  console.log(form.value)
+  const { valid } = await form.value?.validate()
+  if (!valid) {
+    return
+  }
   submitLoading.value = true
   try {
     let response = await appApi({
       method: submitMethod.value,
       url: urlMethod.value,
-      data: form.value
+      data: productForm.value
     })
     openSnackbar(response.data.message, 'success')
     closeForm()
@@ -206,8 +216,25 @@ const closeForm = () => {
 }
 
 const addColor = () => {
-  form.value.colors.push(colorPicker.value)
+  productForm.value.colors.push(colorPicker.value)
 }
+
+const form: any = ref(null)
+
+//Reglas de validacion, forma compacta ya que solo uso required, para  validaciones mas complejas revisar el login
+const nameRules = ref([
+  (value: number | null) => !!value || 'Name is required.'
+])
+const descriptionRules = ref([
+  (value: number | null) => !!value || 'Description is required.'
+])
+const priceRules = ref([
+  (value: number | null) => !!value || 'Price is required.'
+])
+const stockRules = ref([
+  (value: number | null) => !!value || 'Stock is required.'
+
+])
 
 </script>
 <style>

@@ -5,13 +5,14 @@
         <v-card class="mx-auto  pt-6 pb-6" elevation="8" max-width="448" rounded="lg" :loading="loading">
           <v-card-text>
             <v-img :width="100" aspect-ratio="1" cover src="@/assets/logo.svg" class="mx-auto" />
-            <v-form @keydown.enter="login">
+            <v-form @keydown.enter="login" ref="form" validate-on="blur">
 
               <div class="text-subtitle-1 text-medium-emphasis">Email</div>
-
+              <!-- :rules es para la validacion desde el frontend y para la validacion desde el backend :error-messages, ya depende de la preferencia -->
+              <!-- podria usar solamente :rules y definir las reglas en el frontend, o solamente : :error-messages en caso llega algun mensaje desde le backend y quiera reenderizarlo-->
               <v-text-field density="compact" placeholder="Email address" prepend-inner-icon="mdi-email-outline"
                 variant="outlined" v-model="loginForm.email" :error-messages="loginErrors.email?.[0]" color="primary"
-                name="email" type="email" />
+                name="email" type="email" :rules="emailRules" />
 
               <div class="text-subtitle-1 text-medium-emphasis d-flex align-center justify-space-between mt-2">
                 Password
@@ -23,8 +24,8 @@
               <v-text-field :append-inner-icon="showPassword ? 'mdi-eye-off' : 'mdi-eye'"
                 :type="showPassword ? 'text' : 'password'" density="compact" placeholder="Enter your password"
                 prepend-inner-icon="mdi-lock-outline" variant="outlined"
-                @click:append-inner="showPassword = !showPassword" v-model="loginForm.password"
-                :error-messages="loginErrors.password?.[0]" color="primary" />
+                @click:append-inner="showPassword = !showPassword" v-model="loginForm.password" color="primary"
+                :rules="passwordRules" :error-messages="loginErrors.password?.[0]" />
 
             </v-form>
 
@@ -37,7 +38,7 @@
               </v-card-text>
             </v-card>
 
-            <v-btn block class="mb-8" color="blue" size="large" variant="tonal" @click="login" :loading="loading">
+            <v-btn block class="mb-8" color="blue" size="large" variant="tonal" @click="submit" :loading="loading">
               Log In
             </v-btn>
 
@@ -55,7 +56,36 @@
 
 <script setup lang="ts">
 import { useLogin } from '@/composables/useLogin'
-
+import { ref } from 'vue';
 const { login, loginForm, loginErrors, loading, remember, showPassword } = useLogin()
 
+const submit = async () => {
+  const { valid } = await form.value?.validate()
+  if (!valid) return;
+  login()
+}
+
+const form: any = ref(null)
+
+//validacion desde el frontend
+const emailRules = ref([
+  (value: string | null) => {
+    if (!value) {
+      return 'Email is required.'
+    }
+    if (!(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value))) {
+      return 'Invalid email format.'
+    }
+    return true
+  },
+])
+
+const passwordRules = ref([
+  (value: string | null) => {
+    if (!value) {
+      return 'Password is required.'
+    }
+    return true
+  },
+])
 </script>
