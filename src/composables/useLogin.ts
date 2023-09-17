@@ -20,13 +20,14 @@ export function useLogin() {
 
   const loginForm = ref<LoginForm>({ ...initRegisterForm });
 
-  const remember = ref(true);
+  const remember = ref(false);
 
   const login = async () => {
     loading.value = true
     try {
       const response = await appApi.post("/login", loginForm.value)
       saveToken(response.data.access_token)
+      setRemember()
       router.replace('/my-products');
     } catch (error: any) {
       if (error.response?.status === 422) {
@@ -39,12 +40,31 @@ export function useLogin() {
     loading.value = false
   }
 
+  const getRemember = () => {
+    const rememberStorage = localStorage.getItem('remember')
+
+    if (rememberStorage && JSON.parse(rememberStorage).remember) {
+      loginForm.value.email = JSON.parse(rememberStorage).email
+      remember.value = true
+    }
+  }
+
+  const setRemember = () => {
+    if (remember.value) {
+      localStorage.setItem('remember', JSON.stringify({ remember: true, email: loginForm.value.email }))
+    } else {
+      localStorage.removeItem('remember')
+    }
+  }
+
+  getRemember();
+
   return {
     login,
     loginErrors,
     loading,
     loginForm,
     remember,
-    showPassword
+    showPassword,
   }
 }

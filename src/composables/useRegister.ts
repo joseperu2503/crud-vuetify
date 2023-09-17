@@ -10,7 +10,7 @@ export function useRegister() {
   const loading = ref(false);
   const showPassword = ref(false);
 
-  const { loginForm, login } = useLogin()
+  const { loginForm, login, remember } = useLogin()
 
   const registerForm = ref<RegisterForm>({ ...initRegisterForm });
 
@@ -18,6 +18,9 @@ export function useRegister() {
     loading.value = true
     try {
       await appApi.post("/register", registerForm.value)
+
+      //resetear el remember a false cada vez que alguien se registra
+      remember.value = false
       loginForm.value = {
         email: registerForm.value.email,
         password: registerForm.value.password
