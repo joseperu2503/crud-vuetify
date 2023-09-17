@@ -1,7 +1,7 @@
 <template>
   <v-container>
     <v-layout>
-      <v-app-bar :elevation="2" color="primary" density="compact">
+      <v-app-bar :elevation="2" color="primary" density="compact" height="80">
         <v-app-bar-nav-icon variant="text" @click.stop="showDrawer = !showDrawer" v-if="user"></v-app-bar-nav-icon>
         <v-app-bar-title>Crud Vuetify</v-app-bar-title>
         <template v-slot:append>

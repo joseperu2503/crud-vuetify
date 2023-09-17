@@ -72,11 +72,11 @@ const getMyProducts = async () => {
         page: pagination.value.currentPage
       }
     })
-    const getMyProductsResponse = response.data
-    products.value = getMyProductsResponse.data
+    const myProductsResponse = response.data
+    products.value = myProductsResponse.data
     pagination.value = {
-      currentPage: getMyProductsResponse.meta.current_page,
-      totalPages: getMyProductsResponse.meta.last_page
+      currentPage: myProductsResponse.meta.current_page,
+      totalPages: myProductsResponse.meta.last_page
     }
   } catch (error) {
     openSnackbar('An error occurred while loading the products.', 'error')
