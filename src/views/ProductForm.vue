@@ -43,7 +43,7 @@
             </v-carousel>
             <v-divider></v-divider>
 
-            <v-switch hide-details label="Publico" color="primary" v-model="form.is_public"></v-switch>
+            <v-switch hide-details label="Free Shipping" color="primary" v-model="form.free_shipping"></v-switch>
           </v-col>
         </v-row>
       </v-form>
@@ -62,7 +62,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { appApi } from '@/api/appApi'
-import { ProductForm, ProductErrors, Brand, Size, Gender, Category } from '@/interfaces/product.interface'
+import { ProductForm, ProductErrors, Brand, Size, Gender, Category, Product, ProductFormDataResponse } from '@/interfaces/product.interface'
 import { useUploadImage } from '@/composables/useUploadImage';
 import { useSnackbar } from '@/composables/useSnackbar';
 import { useRoute, useRouter } from 'vue-router';
@@ -81,7 +81,7 @@ const form = ref<ProductForm>({
   category_id: null,
   colors: [],
   description: '',
-  is_public: false,
+  free_shipping: false,
   genders: [],
   sizes: []
 })
@@ -110,7 +110,7 @@ const initForm = () => {
     category_id: null,
     colors: [],
     description: '',
-    is_public: false,
+    free_shipping: false,
     genders: [],
     sizes: []
   }
@@ -147,7 +147,7 @@ const loadProduct = async () => {
     submitMethod.value = 'put'
     urlMethod.value = `/products/${productId.value}`
     try {
-      let response = await appApi.get(`/products/${productId.value}`)
+      let response = await appApi.get<Product>(`/products/${productId.value}`)
       form.value = response.data
     } catch (error) {
       openSnackbar('An error occurred. Please try again.', 'error')
@@ -162,11 +162,12 @@ const loadProduct = async () => {
 }
 
 const loadFormData = async () => {
-  let response = await appApi.get(`/products/form-data`)
-  brands.value = response.data.brands
-  categories.value = response.data.brands
-  sizes.value = response.data.sizes
-  genders.value = response.data.genders
+  const response = await appApi.get<ProductFormDataResponse>(`/products/form-data`)
+  const formData = response.data
+  brands.value = formData.brands
+  categories.value = formData.categories
+  sizes.value = formData.sizes
+  genders.value = formData.genders
 }
 
 const { openSnackbar } = useSnackbar()

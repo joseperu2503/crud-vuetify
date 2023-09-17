@@ -1,12 +1,17 @@
 export interface Product {
-  created_at: string;
+  id: number;
   name: string;
   description: string;
-  id: number;
   price: number;
   stock: number;
   images: string[];
-  updated_at: string;
+  brand_id: number;
+  category_id: number;
+  colors: string[];
+  sizes: number[];
+  genders: any[];
+  free_shipping: boolean;
+  created_at: string;
 }
 
 export interface ProductErrors {
@@ -28,7 +33,14 @@ export interface ProductForm {
   sizes: number[];
   brand_id: number | null;
   category_id: number | null;
-  is_public: boolean | null;
+  free_shipping: boolean;
+}
+
+export interface ProductFormDataResponse {
+  brands: Brand[];
+  categories: Category[];
+  genders: Gender[];
+  sizes: Size[];
 }
 
 export interface Gender {

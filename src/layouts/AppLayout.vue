@@ -3,7 +3,7 @@
     <v-layout>
       <v-app-bar :elevation="2" color="primary" density="compact">
         <v-app-bar-nav-icon variant="text" @click.stop="showDrawer = !showDrawer"></v-app-bar-nav-icon>
-        <v-app-bar-title>Dashboard</v-app-bar-title>
+        <v-app-bar-title>Crud Vuetify</v-app-bar-title>
         <template v-slot:append>
           <ToogleTheme />
           <v-menu>
@@ -20,11 +20,13 @@
       </v-app-bar>
       <v-navigation-drawer v-model="showDrawer" temporary>
         <v-list density="compact" nav>
-          <v-list-item prepend-icon="mdi-store" title="My products" to="my-products"></v-list-item>
-          <v-list-item prepend-icon="mdi-plus" title="Create Product" to="create-product"></v-list-item>
+          <v-list-item prepend-icon="mdi-store" title="My products" to="/my-products"></v-list-item>
+          <v-list-item prepend-icon="mdi-plus" title="Create Product" to="/create-product"></v-list-item>
+          <v-list-item prepend-icon="md:sell" title="Brands"></v-list-item>
+          <v-list-item prepend-icon="md:category" title="Categories"></v-list-item>
         </v-list>
         <template v-slot:append>
-          <div class="pa-2">
+          <div class="pa-2 pb-8">
             <v-btn block @click="logout" color="primary" append-icon="mdi-logout">
               Logout
             </v-btn>

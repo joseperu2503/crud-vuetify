@@ -37,6 +37,8 @@
           </tr>
         </tbody>
       </v-table>
+      <v-pagination :length="pagination.totalPages" v-model="pagination.currentPage"
+        @update:model-value="getMyProducts"></v-pagination>
     </v-card-text>
   </v-card>
 </template>
@@ -45,26 +47,37 @@
 import { ref } from 'vue';
 import { appApi } from '@/api/appApi'
 import { Product } from '@/interfaces/product.interface'
+import { ResponsePaginate } from '@/interfaces/responsePaginate.interface'
+
 import { useSnackbar } from '@/composables/useSnackbar';
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
-
 const products = ref<Product[]>([])
-
-const showModal = ref(false)
 const loading = ref(false)
-const productId = ref<number | null>(null)
+const pagination = ref({
+  currentPage: 1,
+  totalPages: 1
+})
 
 const newProduct = () => {
   router.push('/create-product')
 }
 
-const getProducts = async () => {
+const getMyProducts = async () => {
   loading.value = true
   try {
-    let response = await appApi.get("/products")
-    products.value = response.data
+    const response = await appApi.get<ResponsePaginate<Product>>("/products", {
+      params: {
+        page: pagination.value.currentPage
+      }
+    })
+    const getMyProductsResponse = response.data
+    products.value = getMyProductsResponse.data
+    pagination.value = {
+      currentPage: getMyProductsResponse.meta.current_page,
+      totalPages: getMyProductsResponse.meta.last_page
+    }
   } catch (error) {
     openSnackbar('An error occurred while loading the products.', 'error')
   }
@@ -81,11 +94,11 @@ const deleteProduct = async (id: number) => {
   try {
     let response = await appApi.delete(`/products/${id}`)
     openSnackbar(response.data.message, 'success')
-    getProducts()
+    getMyProducts()
   } catch (error: any) {
     openSnackbar('An error occurred. Please try again.', 'error')
   }
 }
 
-getProducts()
+getMyProducts()
 </script>

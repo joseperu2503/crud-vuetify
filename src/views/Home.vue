@@ -11,23 +11,19 @@
       <v-main class="mt-8">
         <v-container class="">
           <v-row>
-            <v-col v-for="product in products" :key="product.id" cols="4">
+            <v-col v-for="product in products" :key="product.id" cols="12" sm="6" md="4" lg="3">
               <v-card>
                 <v-img cover height="250" :src="product.images[0]"></v-img>
                 <v-card-item>
-                  <v-card-title>Xiaomi readmi 11 note pro</v-card-title>
-
-                  <div>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Natus, nam!</div>
-
-                  <v-card-title class="mt-4">$4500.00</v-card-title>
-
-
+                  <v-card-title>{{ product.name }}</v-card-title>
+                  <div>{{ product.description }}</div>
+                  <v-card-title class="mt-4">${{ product.price }}</v-card-title>
                 </v-card-item>
                 <v-card-actions>
                   <v-btn variant="tonal" color="primary" prepend-icon="mdi-cart" class="mt-2">
                     Add to cart
                   </v-btn>
-                  <v-btn  class="mt-2">
+                  <v-btn class="mt-2">
                     Buy
                   </v-btn>
                 </v-card-actions>
@@ -56,7 +52,7 @@ const getProducts = async () => {
   loading.value = true
   try {
     let response = await appApi.get("/products")
-    products.value = response.data
+    products.value = response.data.data
   } catch (error) {
     openSnackbar('An error occurred while loading the products.', 'error')
   }
