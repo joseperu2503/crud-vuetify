@@ -205,7 +205,7 @@ const submit = async () => {
 
 const imageInput = ref<any>(null)
 const clickAddImage = () => {
-  console.log(imageInput.value?.click())
+  imageInput.value?.click()
 }
 
 initForm()
