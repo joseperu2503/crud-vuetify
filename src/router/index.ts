@@ -1,11 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useToken } from '@/composables/useToken'
+import { useAuth } from '@/composables/useAuth';
 
 const routes = [
-  {
-    path: '',
-    component: () => import('@/views/Home.vue'),
-  },
+
   {
     path: '',
     meta: {
@@ -26,27 +23,38 @@ const routes = [
       },
     ]
   },
+
   {
     path: '',
-    meta: {
-      requiresAuth: true,
-    },
     component: () => import('@/layouts/AppLayout.vue'),
     children: [
       {
-        path: '/my-products',
-        component: () => import('@/views/MyProducts.vue'),
+        path: '',
+        component: () => import('@/views/Home.vue'),
       },
       {
-        path: '/create-product',
-        component: () => import('@/views/ProductForm.vue'),
+        path: '',
+        meta: {
+          requiresAuth: true,
+        },
+        children: [
+          {
+            path: '/my-products',
+            component: () => import('@/views/MyProducts.vue'),
+          },
+          {
+            path: '/create-product',
+            component: () => import('@/views/ProductForm.vue'),
+          },
+          {
+            path: '/product/:productId',
+            component: () => import('@/views/ProductForm.vue'),
+          },
+        ],
       },
-      {
-        path: '/product/:productId',
-        component: () => import('@/views/ProductForm.vue'),
-      },
-    ],
+    ]
   },
+
 ]
 
 const router = createRouter({
@@ -55,18 +63,18 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from) => {
-  const { removeToken, validToken } = useToken()
+  const { verifyAuth } = useAuth()
+  const isValid = verifyAuth()
 
   if (to.meta?.requiresAuth) {
-    if (!validToken()) {
-      removeToken()
+    if (!isValid) {
       router.push('/login');
     }
     return true;
   }
 
   if (to.meta?.redirect) {
-    if (validToken()) {
+    if (isValid) {
       router.push('/my-products');
     }
     return true;

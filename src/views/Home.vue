@@ -1,38 +1,10 @@
 <template>
   <v-container>
-    <v-layout>
-      <v-app-bar :elevation="2" color="primary" density="compact">
-        <v-app-bar-title>Crud vuetify</v-app-bar-title>
-        <template v-slot:append>
-          <v-btn variant="outlined" @click="login">Login</v-btn>
-        </template>
-      </v-app-bar>
-
-      <v-main class="mt-8">
-        <v-container class="">
-          <v-row>
-            <v-col v-for="product in products" :key="product.id" cols="12" sm="6" md="4" lg="3">
-              <v-card>
-                <v-img cover height="250" :src="product.images[0]"></v-img>
-                <v-card-item>
-                  <v-card-title>{{ product.name }}</v-card-title>
-                  <div>{{ product.description }}</div>
-                  <v-card-title class="mt-4">${{ product.price }}</v-card-title>
-                </v-card-item>
-                <v-card-actions>
-                  <v-btn variant="tonal" color="primary" prepend-icon="mdi-cart" class="mt-2">
-                    Add to cart
-                  </v-btn>
-                  <v-btn class="mt-2">
-                    Buy
-                  </v-btn>
-                </v-card-actions>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-main>
-    </v-layout>
+    <v-row>
+      <v-col v-for="product in products" :key="product.id" cols="12" sm="6" md="4" lg="3">
+        <ProductCard :product="product" />
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 
@@ -41,9 +13,8 @@ import { ref } from 'vue';
 import { appApi } from '@/api/appApi'
 import { Product } from '@/interfaces/product.interface'
 import { useSnackbar } from '@/composables/useSnackbar';
-import { useRouter } from 'vue-router';
+import ProductCard from '@/components/ProductCard.vue';
 
-const router = useRouter();
 const loading = ref(false)
 const { openSnackbar } = useSnackbar()
 const products = ref<Product[]>([])
@@ -60,10 +31,4 @@ const getProducts = async () => {
 }
 
 getProducts()
-
-const login = () => {
-  router.push('/login')
-}
 </script>
-
-<style scoped></style>
