@@ -1,18 +1,16 @@
 <template>
   <v-card>
-    <v-img cover height="250" :src="product.images[0] ?? '/no-image.jpg'">
+    <v-img :contain="product.images[0]" height="250" :src="product.images[0]" v-if="product.images[0]">
       <template v-slot:error>
         <v-img cover height="250" src="/no-image.jpg"></v-img>
       </template>
       <template v-slot:placeholder>
         <div class="d-flex align-center justify-center fill-height">
-          <v-progress-circular
-            color="grey-lighten-4"
-            indeterminate
-          ></v-progress-circular>
+          <v-progress-circular color="grey-lighten-4" indeterminate></v-progress-circular>
         </div>
-      </template>    </v-img>
-
+      </template>
+    </v-img>
+    <v-img cover height="250" src="/no-image.jpg" v-else></v-img>
     <v-card-item>
       <v-card-title>{{ product.name }}</v-card-title>
       <div>{{ product.description }}</div>

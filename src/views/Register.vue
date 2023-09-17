@@ -2,9 +2,9 @@
   <v-container class="fill-height" style="min-height: 100vh;">
     <v-layout>
       <v-main>
-        <v-card class="mx-auto pt-6 pb-8" elevation="8" max-width="448" rounded="lg" :loading="loading">
+        <v-card class="mx-auto pt-6" elevation="8" max-width="448" rounded="lg" :loading="loading">
           <v-card-title>
-            <h2 class="text-light-blue-darken-1 font-weight-regular">
+            <h2 class="text-light-blue-darken-1 font-weight-bold">
               Sign Up
             </h2>
           </v-card-title>
@@ -36,14 +36,19 @@
                 :rules="confirmPasswordRules" />
             </v-form>
 
-            <v-btn block class="mb-4 mt-4" color="blue" size="large" variant="tonal" @click="submit" :loading="loading">
+            <v-btn block class="mt-4" color="blue" size="large" variant="tonal" @click="submit" :loading="loading">
               Sign Up
             </v-btn>
 
             <v-card-text class="text-center">
               Already have any account?
-              <router-link class="text-blue text-decoration-none" rel="noopener noreferrer" to="/login">
+              <router-link class="text-blue text-decoration-none font-weight-medium" rel="noopener noreferrer" to="/login">
                 Sign In.
+              </router-link>
+            </v-card-text>
+            <v-card-text class="text-center mt-6">
+              <router-link class="text-blue text-decoration-none" rel="noopener noreferrer" to="/">
+                <v-icon icon="mdi-chevron-left"></v-icon>Go to home
               </router-link>
             </v-card-text>
           </v-card-text>

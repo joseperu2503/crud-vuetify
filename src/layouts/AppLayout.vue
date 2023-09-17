@@ -35,17 +35,20 @@
               </v-list-item>
             </v-list>
           </v-menu>
-          <v-btn variant="outlined" @click="login" v-else>Login</v-btn>
+          <div v-else>
+            <v-btn @click="register" class="d-none d-sm-inline">Register</v-btn>
+            <v-btn variant="outlined" @click="login" class="me-2">Login</v-btn>
 
+          </div>
         </template>
       </v-app-bar>
-      <v-navigation-drawer v-model="showDrawer" temporary>
+      <v-navigation-drawer v-model="showDrawer" temporary v-if="user">
         <v-list density="compact" nav>
           <v-list-item prepend-icon="mdi-home" title="Home" to="/" exact></v-list-item>
           <v-list-item prepend-icon="mdi-store" title="My products" to="/my-products" exact></v-list-item>
           <v-list-item prepend-icon="mdi-plus" title="Create Product" to="/create-product" exact></v-list-item>
-          <v-list-item prepend-icon="md:sell" title="Brands"></v-list-item>
-          <v-list-item prepend-icon="md:category" title="Categories"></v-list-item>
+          <v-list-item prepend-icon="md:sell" title="Brands" @click="openModal"></v-list-item>
+          <v-list-item prepend-icon="md:category" title="Categories" @click="openModal"></v-list-item>
         </v-list>
         <template v-slot:append>
           <div class="pa-2 pb-8">
@@ -60,6 +63,19 @@
       </v-main>
     </v-layout>
   </v-container>
+  <v-dialog v-model="dialog" max-width="500">
+    <v-card title="Module Currently Disabled">
+      <v-card-text>
+        Dear user, please be informed that the module you are trying to access is currently disabled. We apologize for any
+        inconvenience this may cause. We are working diligently to enable this module as soon as possible. Thank you for
+        your understanding.
+      </v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" @click="dialog = false">Close</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
@@ -79,5 +95,14 @@ const { user } = storeToRefs(authStore);
 const router = useRouter();
 const login = () => {
   router.push('/login')
+}
+
+const register = () => {
+  router.push('/register')
+}
+
+const dialog = ref(false)
+const openModal = () => {
+  dialog.value = true
 }
 </script>

@@ -2,7 +2,7 @@
   <v-container class="fill-height" style="min-height: 100vh;">
     <v-layout>
       <v-main>
-        <v-card class="mx-auto  pt-6 pb-6" elevation="8" max-width="448" rounded="lg" :loading="loading">
+        <v-card class="mx-auto  pt-6" elevation="8" max-width="448" rounded="lg" :loading="loading">
           <v-card-text>
             <v-img :width="100" aspect-ratio="1" cover src="@/assets/logo.svg" class="mx-auto" />
             <v-form @keydown.enter="login" ref="form" validate-on="blur">
@@ -32,13 +32,18 @@
 
             <v-checkbox label="Remember me" v-model="remember"></v-checkbox>
 
-            <v-btn block class="mb-8" color="blue" size="large" variant="tonal" @click="submit" :loading="loading">
+            <v-btn block color="blue" size="large" variant="tonal" @click="submit" :loading="loading">
               Log In
             </v-btn>
-
             <v-card-text class="text-center">
-              <router-link class="text-blue text-decoration-none" rel="noopener noreferrer" to="/register">
-                Sign up now <v-icon icon="mdi-chevron-right"></v-icon>
+              Don't have an account?
+              <router-link class="text-blue text-decoration-none font-weight-medium" rel="noopener noreferrer" to="/register">
+                Create
+              </router-link>
+            </v-card-text>
+            <v-card-text class="text-center mt-6">
+              <router-link class="text-blue text-decoration-none" rel="noopener noreferrer" to="/">
+                <v-icon icon="mdi-chevron-left"></v-icon>Go to home
               </router-link>
             </v-card-text>
           </v-card-text>

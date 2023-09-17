@@ -5,6 +5,9 @@
         <ProductCard :product="product" />
       </v-col>
     </v-row>
+    <v-btn class="v-btn--floating-action" fab dark color="primary" rounded icon="mdi-plus" size="large"
+      @click="newProduct">
+    </v-btn>
   </v-container>
 </template>
 
@@ -14,6 +17,9 @@ import { appApi } from '@/api/appApi'
 import { Product } from '@/interfaces/product.interface'
 import { useSnackbar } from '@/composables/useSnackbar';
 import ProductCard from '@/components/ProductCard.vue';
+import { useAuthStore } from '@/stores/auth';
+import { storeToRefs } from 'pinia';
+import { useRouter } from 'vue-router';
 
 const loading = ref(false)
 const { openSnackbar } = useSnackbar()
@@ -31,4 +37,25 @@ const getProducts = async () => {
 }
 
 getProducts()
+
+const router = useRouter();
+const authStore = useAuthStore()
+const { user } = storeToRefs(authStore);
+
+const newProduct = () => {
+  if (user) {
+    router.push('/create-product')
+  } else {
+    router.push('/login')
+
+  }
+}
+
 </script>
+<style scoped>
+.v-btn--floating-action {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+}
+</style>

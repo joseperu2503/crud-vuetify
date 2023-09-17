@@ -67,7 +67,7 @@ const newProduct = () => {
 const getMyProducts = async () => {
   loading.value = true
   try {
-    const response = await appApi.get<ResponsePaginate<Product>>("/products", {
+    const response = await appApi.get<ResponsePaginate<Product>>("/my-products", {
       params: {
         page: pagination.value.currentPage
       }
