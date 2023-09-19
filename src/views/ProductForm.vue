@@ -69,7 +69,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { appApi } from '@/api/appApi'
-import { ProductForm, ProductErrors, Brand, Size, Gender, Category, Product, ProductFormDataResponse } from '@/interfaces/product.interface'
+import { ProductForm, ProductErrors, Brand, Size, Gender, Category, Product, ProductFormDataResponse, ProductToProductForm } from '@/interfaces/product.interface'
 import { useUploadImage } from '@/composables/useUploadImage';
 import { useSnackbar } from '@/composables/useSnackbar';
 import { useRoute, useRouter } from 'vue-router';
@@ -155,7 +155,7 @@ const loadProduct = async () => {
     urlMethod.value = `/products/${productId.value}`
     try {
       let response = await appApi.get<Product>(`/products/${productId.value}`)
-      productForm.value = response.data
+      productForm.value = ProductToProductForm(response.data)
     } catch (error) {
       openSnackbar('An error occurred. Please try again.', 'error')
     }
