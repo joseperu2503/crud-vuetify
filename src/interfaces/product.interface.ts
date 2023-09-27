@@ -84,3 +84,8 @@ export const ProductToProductForm = (product: Product): ProductForm => {
     free_shipping: product.free_shipping
   }
 }
+
+export interface ProductOperationResponse {
+  success: boolean;
+  message: string;
+};

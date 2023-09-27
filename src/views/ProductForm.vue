@@ -69,15 +69,17 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { appApi } from '@/api/appApi'
-import { ProductForm, ProductErrors, Brand, Size, Gender, Category, Product, ProductFormDataResponse, ProductToProductForm } from '@/interfaces/product.interface'
+import { ProductForm, ProductErrors, Brand, Size, Gender, Category, ProductToProductForm, ProductOperationResponse } from '@/interfaces/product.interface'
 import { useUploadImage } from '@/composables/useUploadImage';
 import { useSnackbar } from '@/composables/useSnackbar';
 import { useRoute, useRouter } from 'vue-router';
+import { useProduct } from '@/composables/useProduct';
 
 //ruteo
 const route = useRoute()
 const router = useRouter()
 const productId = ref(route.params.productId)
+const $useProduct = useProduct()
 
 const productForm = ref<ProductForm>({
   name: '',
@@ -99,8 +101,6 @@ const sizes = ref<Size[]>([])
 const genders = ref<Gender[]>([])
 
 const errors = ref<ProductErrors>({});
-const submitMethod = ref('')
-const urlMethod = ref('')
 const loading = ref(false)
 const submitLoading = ref(false)
 const images = ref<File[]>([])
@@ -149,28 +149,25 @@ watch(images, async (newValue) => {
 //carga del producto
 const loadProduct = async () => {
   loading.value = true
-  if (productId.value) {
+  if (productId.value && typeof productId.value == 'string') {
     title.value = 'Edit Product'
-    submitMethod.value = 'put'
-    urlMethod.value = `/products/${productId.value}`
     try {
-      let response = await appApi.get<Product>(`/products/${productId.value}`)
-      productForm.value = ProductToProductForm(response.data)
+      const productResponse = await $useProduct.getProduct(parseInt(productId.value))
+      productForm.value = ProductToProductForm(productResponse)
+
     } catch (error) {
       openSnackbar('An error occurred. Please try again.', 'error')
     }
   } else {
     title.value = 'New Product'
-    submitMethod.value = 'post'
-    urlMethod.value = `/products`
   }
   await loadFormData()
   loading.value = false
 }
 
 const loadFormData = async () => {
-  const response = await appApi.get<ProductFormDataResponse>(`/products/form-data`)
-  const formData = response.data
+  const response = await $useProduct.getFormData()
+  const formData = response
   brands.value = formData.brands
   categories.value = formData.categories
   sizes.value = formData.sizes
@@ -186,12 +183,13 @@ const submit = async () => {
   }
   submitLoading.value = true
   try {
-    let response = await appApi({
-      method: submitMethod.value,
-      url: urlMethod.value,
-      data: productForm.value
-    })
-    openSnackbar(response.data.message, 'success')
+    let response: ProductOperationResponse
+    if (productId.value && typeof productId.value == 'string') {
+      response = await $useProduct.updateProduct(parseInt(productId.value), productForm.value)
+    } else {
+      response = await $useProduct.createProduct(form.value)
+    }
+    openSnackbar(response.message, 'success')
     closeForm()
   } catch (error: any) {
     if (error.response?.status === 422) {

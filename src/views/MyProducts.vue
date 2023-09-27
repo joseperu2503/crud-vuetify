@@ -45,13 +45,12 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import { appApi } from '@/api/appApi'
 import { Product } from '@/interfaces/product.interface'
-import { ResponsePaginate } from '@/interfaces/responsePaginate.interface'
-
 import { useSnackbar } from '@/composables/useSnackbar';
 import { useRouter } from 'vue-router';
+import { useProduct } from '@/composables/useProduct';
 
+const $useProduct = useProduct()
 const router = useRouter()
 const products = ref<Product[]>([])
 const loading = ref(false)
@@ -67,12 +66,7 @@ const newProduct = () => {
 const getMyProducts = async () => {
   loading.value = true
   try {
-    const response = await appApi.get<ResponsePaginate<Product>>("/my-products", {
-      params: {
-        page: pagination.value.currentPage
-      }
-    })
-    const myProductsResponse = response.data
+    const myProductsResponse = await $useProduct.getMyProducts(pagination.value.currentPage)
     products.value = myProductsResponse.data
     pagination.value = {
       currentPage: myProductsResponse.meta.current_page,
@@ -84,18 +78,20 @@ const getMyProducts = async () => {
   loading.value = false
 }
 
-const editProduct = (id: number) => {
-  router.push(`/product/${id}`)
+const editProduct = (productId: number) => {
+  router.push(`/product/${productId}`)
 }
 
 const { openSnackbar } = useSnackbar()
 
-const deleteProduct = async (id: number) => {
+const deleteProduct = async (productId: number) => {
+  loading.value = true
   try {
-    let response = await appApi.delete(`/products/${id}`)
-    openSnackbar(response.data.message, 'success')
+    let response = await $useProduct.deleteProduct(productId)
+    openSnackbar(response.message, 'success')
     getMyProducts()
   } catch (error: any) {
+    loading.value = false
     openSnackbar('An error occurred. Please try again.', 'error')
   }
 }

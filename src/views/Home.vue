@@ -13,35 +13,30 @@
 
 <script setup lang="ts">
 import { ref, onUnmounted } from 'vue';
-import { appApi } from '@/api/appApi'
 import { Product } from '@/interfaces/product.interface'
 import { useSnackbar } from '@/composables/useSnackbar';
 import ProductCard from '@/components/ProductCard.vue';
 import { useAuthStore } from '@/stores/auth';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
-import { ResponsePaginate } from '@/interfaces/responsePaginate.interface';
+import { useProduct } from '@/composables/useProduct';
 
 const loading = ref(false)
 const { openSnackbar } = useSnackbar()
 const products = ref<Product[]>([])
-const page = ref<number>(1)
-const loadMore = ref<boolean>(true)
+const $useProduct = useProduct()
+const pagination = ref({
+  currentPage: 1,
+  totalPages: 1,
+})
 const getProducts = async () => {
+  if (pagination.value.currentPage > pagination.value.totalPages || loading.value) return;
+
   loading.value = true
   try {
-    const response = await appApi.get<ResponsePaginate<Product>>("/products", {
-      params: {
-        page: page.value
-      }
-    })
-    const productsResponse = response.data
-    if (page.value < productsResponse.meta.last_page) {
-      page.value++
-      loadMore.value = true
-    } else {
-      loadMore.value = false
-    }
+    const productsResponse = await $useProduct.getProducts(pagination.value.currentPage)
+    pagination.value.currentPage = pagination.value.currentPage + 1
+    pagination.value.totalPages = productsResponse.meta.last_page
     products.value.push(...productsResponse.data)
   } catch (error) {
     openSnackbar('An error occurred while loading the products.', 'error')
@@ -69,7 +64,7 @@ function handleScroll() {
   const scrollPosition = window.scrollY;
   const distanceFromBottom = 300;
   const triggerPosition = pageHeight - windowHeight - distanceFromBottom;
-  if (scrollPosition >= triggerPosition && !loading.value && loadMore.value) {
+  if (scrollPosition >= triggerPosition) {
     getProducts()
   }
 }
