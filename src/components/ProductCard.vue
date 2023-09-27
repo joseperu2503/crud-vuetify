@@ -13,7 +13,7 @@
     <v-img cover height="250" src="/no-image.jpg" v-else></v-img>
     <v-card-item>
       <v-card-title>{{ product.name }}</v-card-title>
-      <div>{{ product.description }}</div>
+      <div class="description">{{ product.description }}</div>
       <v-card-title class="mt-4">${{ product.price }}</v-card-title>
     </v-card-item>
     <v-card-actions>
@@ -26,8 +26,15 @@
     </v-card-actions>
   </v-card>
 </template>
-
 <script setup lang="ts">
 import { Product } from '@/interfaces/product.interface';
 defineProps<{ product: Product }>()
 </script>
+<style scoped>
+.description {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+</style>
