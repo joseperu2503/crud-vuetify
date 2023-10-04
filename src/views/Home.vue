@@ -5,6 +5,9 @@
         <ProductCard :product="product" />
       </v-col>
     </v-row>
+    <v-row justify="center" class="mt-8" v-if="loading">
+      <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
+    </v-row>
     <v-btn class="v-btn--floating-action" fab dark color="primary" rounded icon="mdi-plus" size="large"
       @click="newProduct">
     </v-btn>
