@@ -42,7 +42,7 @@
             <v-file-input accept="image/png, image/jpeg" prepend-icon="mdi-camera" label="Images" v-model="images"
               :error-messages="errors.images?.[0]" multiple class="d-none" ref="imageInput" />
             <v-btn prepend-icon="mdi-camera" class="mt-4 w-100" @click="clickAddImage">
-              Subir imagen
+              Upload image
             </v-btn>
             <v-carousel hide-delimiters v-if="productForm.images.length > 0" height="300" class="mt-4 mb-4">
               <v-carousel-item v-for="(image, index) in productForm.images" :key="index" :src="image"
