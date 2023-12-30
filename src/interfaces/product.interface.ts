@@ -11,6 +11,7 @@ export interface Product {
   sizes: Size[];
   genders: Gender[];
   free_shipping: boolean;
+  discount: number | null;
   created_at: string;
 }
 
@@ -19,6 +20,7 @@ export interface ProductErrors {
   description?: string[];
   price?: string[];
   stock?: string[];
+  discount?: string[];
   images?: string[];
   colors?: string[];
   genders?: string[];
@@ -37,6 +39,7 @@ export interface ProductForm {
   images: string[];
   colors: string[];
   genders: number[];
+  discount: number | null;
   sizes: number[];
   brand_id: number | null;
   category_id: number | null;
@@ -77,6 +80,7 @@ export const ProductToProductForm = (product: Product): ProductForm => {
     stock: product.stock,
     images: product.images,
     colors: product.colors,
+    discount: product.discount,
     genders: product.genders.map(gender => gender.id),
     sizes: product.sizes.map(size => size.id),
     brand_id: product.brand ? product.brand.id : null,

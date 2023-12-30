@@ -37,7 +37,8 @@
             </v-btn>
             <v-card-text class="text-center">
               Don't have an account?
-              <router-link class="text-blue text-decoration-none font-weight-medium" rel="noopener noreferrer" to="/register">
+              <router-link class="text-blue text-decoration-none font-weight-medium" rel="noopener noreferrer"
+                to="/register">
                 Create
               </router-link>
             </v-card-text>

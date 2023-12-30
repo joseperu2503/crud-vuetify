@@ -51,6 +51,8 @@
             <v-divider></v-divider>
 
             <v-switch hide-details label="Free Shipping" color="primary" v-model="productForm.free_shipping"></v-switch>
+            <v-text-field label="Discount" type="number" v-model="productForm.discount"
+              :error-messages="errors.discount?.[0]" class="mt-4" color="primary" :rules="discountRules" suffix="%" />
           </v-col>
         </v-row>
       </v-form>
@@ -68,7 +70,6 @@
 </template>
 <script setup lang="ts">
 import { ref, watch } from 'vue';
-import { appApi } from '@/api/appApi'
 import { ProductForm, ProductErrors, Brand, Size, Gender, Category, ProductToProductForm, ProductOperationResponse } from '@/interfaces/product.interface'
 import { useUploadImage } from '@/composables/useUploadImage';
 import { useSnackbar } from '@/composables/useSnackbar';
@@ -88,6 +89,7 @@ const productForm = ref<ProductForm>({
   images: [],
   brand_id: null,
   category_id: null,
+  discount: null,
   colors: [],
   description: '',
   free_shipping: false,
@@ -115,6 +117,7 @@ const initForm = () => {
     images: [],
     brand_id: null,
     category_id: null,
+    discount: null,
     colors: [],
     description: '',
     free_shipping: false,
@@ -166,12 +169,16 @@ const loadProduct = async () => {
 }
 
 const loadFormData = async () => {
-  const response = await $useProduct.getFormData()
-  const formData = response
-  brands.value = formData.brands
-  categories.value = formData.categories
-  sizes.value = formData.sizes
-  genders.value = formData.genders
+  try {
+    const response = await $useProduct.getFormData()
+    const formData = response
+    brands.value = formData.brands
+    categories.value = formData.categories
+    sizes.value = formData.sizes
+    genders.value = formData.genders
+  } catch (error) {
+    openSnackbar('An error occurred. Please try again.', 'error')
+  }
 }
 
 const { openSnackbar } = useSnackbar()
@@ -221,17 +228,28 @@ const form: any = ref(null)
 
 //Reglas de validacion, forma compacta ya que solo uso required, para  validaciones mas complejas revisar el login
 const nameRules = ref([
-  (value: number | null) => !!value || 'Name is required.'
+  (value: string | null) => !!value || 'Name is required.'
 ])
 const descriptionRules = ref([
-  (value: number | null) => !!value || 'Description is required.'
+  (value: string | null) => !!value || 'Description is required.'
 ])
 const priceRules = ref([
   (value: number | null) => !!value || 'Price is required.'
 ])
 const stockRules = ref([
   (value: number | null) => !!value || 'Stock is required.'
-
+])
+const discountRules = ref([
+  (value: number | null) => {
+    if (!value) return true;
+    if (value < 0) {
+      return 'Discount must be greater than or equa to 0.'
+    }
+    if (value > 100) {
+      return 'Discount must be less than or equal to 100.'
+    }
+    return true;
+  }
 ])
 
 </script>

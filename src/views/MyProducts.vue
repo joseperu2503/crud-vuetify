@@ -11,6 +11,7 @@
             <th class="text-left">ID</th>
             <th class="text-left" style="min-width: 200px">Name</th>
             <th class="text-left">Price</th>
+            <th class="text-left">Discount</th>
             <th class="text-left">Stock</th>
             <th class="text-left" style="min-width: 110px">Date</th>
             <th class="text-left">Actions</th>
@@ -22,7 +23,8 @@
             <td>{{ product.name }}</td>
             <td>{{ product.price }}</td>
             <td>{{ product.stock }}</td>
-            <td>{{ product.created_at }}</td>
+            <td>{{ product.discount ? product.discount + '%' : '-' }}</td>
+            <td>{{ moment(product.created_at).format('YYYY-MM-DD HH:mm:ss') }}</td>
             <td>
               <v-menu>
                 <template v-slot:activator="{ props }">
@@ -49,6 +51,7 @@ import { Product } from '@/interfaces/product.interface'
 import { useSnackbar } from '@/composables/useSnackbar';
 import { useRouter } from 'vue-router';
 import { useProduct } from '@/composables/useProduct';
+import moment from 'moment';
 
 const $useProduct = useProduct()
 const router = useRouter()
